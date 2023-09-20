@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -35,7 +35,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'shop',
+    'shop.apps.ShopConfig',
+    'cart.apps.CartConfig',
+    'orders.apps.OrdersConfig',
+    'payment.apps.PaymentConfig',
 ]
 
 MIDDLEWARE = [
@@ -61,6 +64,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'cart.context_processors.cart',
             ],
         },
     },
@@ -119,3 +123,21 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+CART_SESSION_ID = 'cart'
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.environ.get('GMAIL_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('GMAIL_PASS')
+
+STRIPE_PUBLISHABLE_KEY = ('pk_test_51NflZDCfeYaEMfGHTnpvhVXrxhOllzRNxsSCQsYrAL6jNS4iOMZFXB4c'
+                          '33Up31IXbFmOXWhK3Jp4MTooSRKsY9gP00WB3erCI6')
+STRIPE_SECRET_KEY = ('sk_test_51NflZDCfeYaEMfGH389kOzmBVRbPEOaDuI3yO7zpVhuaV675ikC2Z6TGNITsN'
+                     'xd524E2tMEZK6b0IWmzyHJPt8o100XktYICwJ')
+STRIPE_API_VERSION = '2022-11-15'
+
+STRIPE_WEBHOOK_SECRET = 'whsec_01d00907100b57d4628eef55df42778dbec28c35ab8349629feb46626b344568'
+
+STATIC_ROOT = BASE_DIR / 'static'

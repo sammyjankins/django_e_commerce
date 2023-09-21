@@ -1,5 +1,6 @@
+import os
+
 import stripe
-from django.conf import settings
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from stripe.error import SignatureVerificationError
@@ -16,7 +17,7 @@ def stripe_webhook(request):
         event = stripe.Webhook.construct_event(
             payload,
             sig_header,
-            settings.STRIPE_WEBHOOK_SECRET)
+            os.environ.get('STRIPE_WEBHOOK_SECRET'))
     except ValueError:
         return HttpResponse(status=400)
     except SignatureVerificationError:

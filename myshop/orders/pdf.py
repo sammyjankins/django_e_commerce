@@ -8,7 +8,7 @@ from orders.models import Order
 
 class PDFReport(FPDF):
 
-    def colored_table(self, headings, rows, total, col_widths=(42, 39, 35, 42)):
+    def colored_table(self, headings, rows, order, col_widths=(56, 30, 28, 36)):
         self.set_fill_color(89, 147, 187)
         # цвет текста
         self.set_text_color(255)
@@ -21,11 +21,13 @@ class PDFReport(FPDF):
         for col_width, heading in zip(col_widths, headings):
             self.cell(col_width, 7, heading, 1, align="C", fill=True)
         self.ln()
+
         # Восстановление цвета и шрифта:
         self.set_fill_color(224, 235, 255)
         self.set_text_color(0)
         self.set_font()
         fill = False
+
         for row in rows:
             self.cell(col_widths[0], 6, row[0], 1, align="L", fill=fill)
             self.cell(col_widths[1], 6, str(row[1]), 1, align="L", fill=fill)
@@ -33,9 +35,17 @@ class PDFReport(FPDF):
             self.cell(col_widths[3], 6, str(row[3]), 1, align="R", fill=fill)
             self.ln()
             fill = not fill
-            print(f'row: {row[0]}, fill: {fill}')
-        self.cell(col_widths[0], 6, "Total", "LR", align="L")
-        self.cell(sum(col_widths[1:]), 6, f"{total}", "LR", align="R")
+
+        if order.coupon:
+            self.cell(col_widths[0], 6, f'"{order.coupon.code}" coupon ({order.coupon.discount}% off)',
+                      "LR", align="L", fill=True)
+            self.cell(sum(col_widths[1:]), 6, f"-{order.get_discount():.2f}", "LR", align="R", fill=True)
+            self.ln()
+
+        self.set_fill_color(89, 147, 187)
+        self.set_text_color(255)
+        self.cell(col_widths[0], 6, "Total", "LR", align="L", fill=True)
+        self.cell(sum(col_widths[1:]), 6, f"{order.get_total_cost():.2f}", "LR", align="R", fill=True)
         self.ln()
         self.cell(sum(col_widths), 0, "", "T")
 
@@ -85,7 +95,7 @@ class PDFReport(FPDF):
         for item in order.items.all():
             table_data.append([item.product.name, item.price, item.quantity, item.get_cost()])
         headers = ['Product', 'Price', 'Quantity', 'Cost']
-        self.colored_table(headers, table_data, order.get_total_cost())
+        self.colored_table(headers, table_data, order)
 
         self.ln(10)
         self.set_line_width(2)

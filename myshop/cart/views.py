@@ -3,6 +3,7 @@ from django.views.decorators.http import require_POST
 from shop.models import Product
 from .cart import Cart
 from .forms import CartAddProductForm
+from coupons.forms import CouponApplyForm
 
 
 @require_POST
@@ -14,7 +15,7 @@ def cart_add(request, product_id):
         cd = form.cleaned_data
         cart.add(product=product, quantity=cd['quantity'],
                  override_quantity=cd['override'])
-    return redirect('cart:cart_detail') #TODO подумать над необходимостью перенаправления на страницу корзины
+    return redirect('cart:cart_detail')  # TODO подумать над необходимостью перенаправления на страницу корзины
 
 
 @require_POST
@@ -27,4 +28,9 @@ def cart_remove(request, product_id):
 
 def cart_detail(request):
     cart = Cart(request)
-    return render(request, 'cart/detail.html', {'cart': cart})
+    for item in cart:
+        item['update_quantity_form'] = CartAddProductForm(initial={
+            'quantity': item['quantity'],
+            'override': True})
+    coupon_apply_form = CouponApplyForm()
+    return render(request, 'cart/detail.html', {'cart': cart, 'coupon_apply_form': coupon_apply_form})

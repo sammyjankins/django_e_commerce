@@ -6,6 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from stripe.error import SignatureVerificationError
 
 from orders.models import Order
+from shop.recommender import Recommender
 from .tasks import payment_completed
 
 
@@ -34,5 +35,7 @@ def stripe_webhook(request):
             order.stripe_id = session.payment_intent
             order.save()
             payment_completed.delay(order.id)
+            r = Recommender()
+            r.products_bought([item.product.id for item in order.items.all()])
 
     return HttpResponse(status=200)

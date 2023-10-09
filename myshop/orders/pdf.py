@@ -1,9 +1,6 @@
-import datetime
-
 from fpdf import FPDF
 
 from myshop import settings
-from orders.models import Order
 
 
 class PDFReport(FPDF):
@@ -44,6 +41,7 @@ class PDFReport(FPDF):
 
         self.set_fill_color(89, 147, 187)
         self.set_text_color(255)
+
         self.cell(col_widths[0], 6, "Total", "LR", align="L", fill=True)
         self.cell(sum(col_widths[1:]), 6, f"{order.get_total_cost():.2f}", "LR", align="R", fill=True)
         self.ln()

@@ -1,10 +1,11 @@
+import os
+
 import redis
-from django.conf import settings
 from .models import Product
 
-r = redis.Redis(host=settings.REDIS_HOST,
-                port=settings.REDIS_PORT,
-                db=settings.REDIS_DB)
+r = redis.Redis(host=os.environ.get('REDIS_HOST'),
+                port=os.environ.get('REDIS_PORT'),
+                db=os.environ.get('REDIS_DB'))
 
 
 class Recommender:
@@ -22,7 +23,6 @@ class Recommender:
 
     def suggest_products_for(self, products, max_results=6):
         product_ids = [p.id for p in products]
-        print(product_ids)
 
         if len(products) == 1:
             suggestions = r.zrange(
@@ -39,7 +39,6 @@ class Recommender:
                                    desc=True)[:max_results]
             r.delete(tmp_key)
         suggested_products_ids = [int(id) for id in suggestions]
-        print(suggested_products_ids)
         suggested_products = list(Product.objects.filter(
             id__in=suggested_products_ids))
         suggested_products.sort(key=lambda x: suggested_products_ids.index(x.id))

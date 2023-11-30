@@ -1,3 +1,5 @@
+import os
+
 from fpdf import FPDF
 
 from myshop import settings
@@ -49,10 +51,10 @@ class PDFReport(FPDF):
 
     def configure_fonts(self):
 
-        self.add_font("Sans", style="", fname=settings.STATIC_ROOT / "Noto_Sans/NotoSans-Regular.ttf")
-        self.add_font("Sans", style="B", fname=settings.STATIC_ROOT / "Noto_Sans/NotoSans-Bold.ttf")
-        self.add_font("Sans", style="I", fname=settings.STATIC_ROOT / "Noto_Sans/NotoSans-Italic.ttf")
-        self.add_font("Sans", style="BI", fname=settings.STATIC_ROOT / "Noto_Sans/NotoSans-BoldItalic.ttf")
+        self.add_font("Sans", style="", fname=os.path.join(settings.STATIC_ROOT, "Noto_Sans/NotoSans-Regular.ttf"))
+        self.add_font("Sans", style="B", fname=os.path.join(settings.STATIC_ROOT, "Noto_Sans/NotoSans-Bold.ttf"))
+        self.add_font("Sans", style="I", fname=os.path.join(settings.STATIC_ROOT, "Noto_Sans/NotoSans-Italic.ttf"))
+        self.add_font("Sans", style="BI", fname=os.path.join(settings.STATIC_ROOT, "Noto_Sans/NotoSans-BoldItalic.ttf"))
 
     def get_report(self, order, filename=None):
         self.configure_fonts()

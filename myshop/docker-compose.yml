@@ -7,6 +7,8 @@ services:
       - .env.postgres
     ports:
       - "8001:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
 
   project:
     build:
@@ -64,3 +66,4 @@ services:
 volumes:
   static_volume:
   media_volume:
+  pg_data:

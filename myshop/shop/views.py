@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 
 from cart.forms import CartAddProductForm
@@ -33,3 +34,7 @@ def product_detail_view(request, id, slug):
         {'product': product,
          'cart_product_form': cart_product_form,
          'recommended_products': recommended_products})
+
+
+def health(request):
+    return JsonResponse({'status': 'ok'})

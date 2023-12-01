@@ -20,7 +20,13 @@ services:
     volumes:
       - static_volume:/code/static
       - media_volume:/code/media
-
+    restart: on-failure:5
+    healthcheck:
+      test: curl -f http://localhost:8000/health || exit 1
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
   nginx:
     image: nginx:latest
     volumes:

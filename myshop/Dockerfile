@@ -3,7 +3,7 @@ FROM python:3.10-alpine
 RUN mkdir code
 WORKDIR code
 
-RUN apk update && apk upgrade
+RUN apk update && apk upgrade && apk --no-cache add curl
 RUN pip install --upgrade pip
 
 COPY ./requirements.txt /code/requirements.txt

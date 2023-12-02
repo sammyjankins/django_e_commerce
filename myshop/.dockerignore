@@ -1,0 +1,7 @@
+.env
+.env.project
+.env.postgres
+.env.postgres.template
+.env.project.template
+db.sqlite3
+requirements-local.txt
